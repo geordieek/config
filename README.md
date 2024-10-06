@@ -5,6 +5,9 @@
 ### Software that is nice
 
 - wezterm
+- oh-my-zsh
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
 - lazyvim
 - lazygit
 - fzf
