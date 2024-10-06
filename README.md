@@ -23,6 +23,10 @@
 - Write package manager script for easier package install on different systems.
 - Investigate GNU Stow for managing this repo
 
+#### Things to investigate
+
+- [diagflow.nvim](https://github.com/dgagn/diagflow.nvim) for showing diagnostics in top-right
+
 #### Other misc info
 
 - In Windows, Neovim files go in C:\Users\your_username\AppData\Local\nvim. Update settings.vim path in vim init.lua
