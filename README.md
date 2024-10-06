@@ -2,17 +2,18 @@
 
 - Setup using a bare repo from [this guide](https://www.atlassian.com/git/tutorials/dotfiles).
 
-### Software that is nice
+### Relevant software
 
+- nvim
 - wezterm
 - oh-my-zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
 - lazyvim
+  - fd
+  - ripgrep
 - lazygit
 - fzf
-- ripgrep
-- tree-sitter
 - bat
 - nerdfonts
 
@@ -20,6 +21,7 @@
 
 - Write more custom aliases and include them in their own .md or in here.
 - Write package manager script for easier package install on different systems.
+- Investigate GNU Stow for managing this repo
 
 #### Other misc info
 
