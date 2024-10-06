@@ -9,6 +9,7 @@
 - oh-my-zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
+  - [powerlevel10k](https://github.com/romkatv/powerlevel10k) (get fonts from here)
 - lazyvim
   - fd
   - ripgrep
@@ -29,4 +30,5 @@
 
 #### Other misc info
 
+- Wezterm requires MesloLGS fonts from powerlevel10k
 - In Windows, Neovim files go in C:\Users\your_username\AppData\Local\nvim. Update settings.vim path in vim init.lua
