@@ -7,7 +7,7 @@
 - nvim
 - wezterm
 - tmux
-  - [tpm](https://github.com/tmux-plugins/tpm)
+  - [tpm](https://github.com/tmux-plugins/tpm) manages plugins
 - oh-my-zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
