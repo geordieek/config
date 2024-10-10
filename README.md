@@ -1,6 +1,7 @@
 # Config and dotfiles
 
-- Setup using a bare repo from [this guide](https://www.atlassian.com/git/tutorials/dotfiles).
+- Tracked using a bare repo from [this guide](https://www.atlassian.com/git/tutorials/dotfiles).
+- Special thanks to @typecraft-dev for a lot of inspiration with many parts of this setup.
 
 ### Relevant software
 
