@@ -20,11 +20,17 @@ local act = wezterm.action
 
 -- Set keybindings
 config.keys = {
-	-- Split the pane horizontally with CMD + SHIFT + J
+	-- Split the pane horizontally (top/bottom) with CMD + SHIFT + J
 	{
 		key = "J",
 		mods = "CMD|SHIFT",
 		action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+	-- Split the pane vertically (left/right) with CMD + SHIFT + J
+	{
+		key = "L",
+		mods = "CMD|SHIFT",
+		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	-- Close the current pane with CMD + SHIFT + K
 	{
@@ -32,17 +38,29 @@ config.keys = {
 		mods = "CMD|SHIFT",
 		action = act.CloseCurrentPane({ confirm = false }),
 	},
+	-- Navigate to the pane above with CMD + K
+	{
+		key = "k",
+		mods = "CMD",
+		action = act.ActivatePaneDirection("Up"),
+	},
 	-- Navigate to the pane below with CMD + J
 	{
 		key = "j",
 		mods = "CMD",
 		action = act.ActivatePaneDirection("Down"),
 	},
-	-- Navigate to the pane above with CMD + K
+	-- Navigate to the pane to the right with CMD + L
 	{
-		key = "k",
+		key = "l",
 		mods = "CMD",
-		action = act.ActivatePaneDirection("Up"),
+		action = act.ActivatePaneDirection("Right"),
+	},
+	-- Navigate to the pane to the right with CMD + H
+	{
+		key = "h",
+		mods = "CMD",
+		action = act.ActivatePaneDirection("Left"),
 	},
 }
 
