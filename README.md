@@ -6,6 +6,8 @@
 
 - nvim
 - wezterm
+- tmux
+  - [tpm](https://github.com/tmux-plugins/tpm)
 - oh-my-zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
