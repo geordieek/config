@@ -1,11 +1,14 @@
 # Config and dotfiles
 
-- Setup using a bare repo from [this guide](https://www.atlassian.com/git/tutorials/dotfiles).
+- Tracked using a bare repo from [this guide](https://www.atlassian.com/git/tutorials/dotfiles).
+- Special thanks to @typecraft-dev for a lot of inspiration with many parts of this setup.
 
 ### Relevant software
 
 - nvim
 - wezterm
+- tmux
+  - [tpm](https://github.com/tmux-plugins/tpm) manages plugins
 - oh-my-zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
@@ -23,6 +26,8 @@
 - Write more custom aliases and include them in their own .md or in here.
 - Write package manager script for easier package install on different systems.
 - Investigate GNU Stow for managing this repo
+- Move from `vim-test` to [neotest](https://github.com/nvim-neotest/neotest)
+- Remap keyboard so held caps lock acts as ctrl
 
 #### Things to investigate
 
