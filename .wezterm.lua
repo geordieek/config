@@ -11,7 +11,7 @@ config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 
 -- Set colour scheme
-config.color_scheme = "Tokyo Night Moon"
+config.color_scheme = "Catppuccin Mocha"
 
 -- Use powerlevel10k recommended font
 config.font = wezterm.font("MesloLGS NF")
