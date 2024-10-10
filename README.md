@@ -26,6 +26,7 @@
 - Write more custom aliases and include them in their own .md or in here.
 - Write package manager script for easier package install on different systems.
 - Investigate GNU Stow for managing this repo
+- Move from `vim-test` to [neotest](https://github.com/nvim-neotest/neotest)
 - Remap keyboard so held caps lock acts as ctrl
 
 #### Things to investigate
