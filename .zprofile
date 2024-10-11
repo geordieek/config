@@ -1,7 +1,8 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
-# Stop corepack from adding 'packageManager' to package.json
-COREPACK_ENABLE_AUTO_PIN=0
+# Only on MacOS
+if [[ "$(uname)" == "Darwin" ]]; then
+  # Homebrew setup
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

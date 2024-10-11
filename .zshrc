@@ -9,17 +9,7 @@ fi
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Stop corepack from adding 'packageManager' to package.json
-COREPACK_ENABLE_AUTO_PIN=0
-
-# Custom aliases
-# fzf, preview with bat, then open in nvim directly
-alias inv='nvim $(fzf -m --preview="bat --colow=always {}")'
-
-# interact with config repository
-alias config='/usr/bin/git --git-dir=/Users/geordie/.cfg/ --work-tree=/Users/geordie'
-
-# Use fzf
-source <(fzf --zsh)
+export COREPACK_ENABLE_AUTO_PIN=0
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -28,8 +18,8 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# This is currently overwritten by p10k
-ZSH_THEME="robbyrussell"
+# Powerlevel10k needs to be installed
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -91,7 +81,10 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions)
+plugins=(
+  git 
+  zsh-autosuggestions
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -124,14 +117,32 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Custom aliases
+# fzf, preview with bat, then open in nvim directly
+alias inv='nvim $(fzf -m --preview="bat --colow=always {}")'
+
+# interact with config repository
+alias config='/usr/bin/git --git-dir=/Users/geordie/.cfg/ --work-tree=/Users/geordie'
+
+# Use fzf
+source <(fzf --zsh)
+
+
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/geordie/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/geordie/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/geordie/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/geordie/google-cloud-sdk/completion.zsh.inc'; fi
+
+# Mac only settings
+if [[ "$(uname)" == "Darwin" ]]; then
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Manual FZF installation on Ubuntu 22.04
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
