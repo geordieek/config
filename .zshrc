@@ -84,6 +84,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
   git 
   zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -122,12 +123,10 @@ source $ZSH/oh-my-zsh.sh
 alias inv='nvim $(fzf -m --preview="bat --colow=always {}")'
 
 # interact with config repository
-alias config='/usr/bin/git --git-dir=/Users/geordie/.cfg/ --work-tree=/Users/geordie'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # Use fzf
 source <(fzf --zsh)
-
-
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/geordie/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/geordie/google-cloud-sdk/path.zsh.inc'; fi
