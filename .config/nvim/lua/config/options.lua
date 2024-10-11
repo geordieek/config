@@ -5,7 +5,7 @@
 -- Set wrapping by default
 vim.opt.wrap = true
 
--- Configure diagnostics
+-- FIXME: Configure diagnostics properly
 vim.diagnostic.config({
   underline = true,
   virtual_text = {
