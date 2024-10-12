@@ -95,6 +95,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
 # Brew manages settings
 plugins=(
   git 
+  zsh-autosuggestions
 )
 else
 # Linux settings (oh-my-zsh manages plugins on Ubuntu)
