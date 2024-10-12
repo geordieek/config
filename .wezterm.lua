@@ -19,6 +19,9 @@ config.font = wezterm.font("MesloLGS NF")
 -- Always prompt window close (tmux handles panes anyway)
 config.window_close_confirmation = "AlwaysPrompt"
 
+-- Hide title bar
+config.window_decorations = "RESIZE"
+
 local act = wezterm.action
 
 -- This overrides the default so wezterm will ask for confirmation when closing tmux
