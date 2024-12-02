@@ -40,7 +40,7 @@ else
 fi
 
 # List of programs to install via Homebrew
-programs=("neovim" "tmux" "fzf" "bat" "lazygit" "fd" "ripgrep")
+programs=("node" "nvm" "neovim" "tmux" "fzf" "bat" "lazygit" "fd" "ripgrep")
 
 # Install the core programs possible with brew
 for program in "${programs[@]}"; do
