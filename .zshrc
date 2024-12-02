@@ -92,10 +92,9 @@ fi
 
 # Mac only settings
 if [[ "$(uname)" == "Darwin" ]]; then
-# Brew manages settings
+# Brew manages plugins in MacOS, so don't need plugins here
 plugins=(
   git 
-  zsh-autosuggestions
 )
 else
 # Linux settings (oh-my-zsh manages plugins on Ubuntu)
@@ -106,7 +105,7 @@ plugins=(
 )
 fi
 
-
+# Now we've set plugins, source oh-my-zsh.sh
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -158,6 +157,7 @@ if [ -f '/Users/geordie/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/g
 if [[ "$(uname)" == "Darwin" ]]; then
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
