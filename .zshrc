@@ -171,32 +171,40 @@ fi
 # Manual FZF installation on Ubuntu 22.04
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Node version manager
-# TODO: Consider lazyloading this if notice shell startup sluggish
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-# __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#     eval "$__conda_setup"
-# else
-#     if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-#         . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-#     else
-#         export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-#     fi
-# fi
-# unset __conda_setup
-# <<< conda initialize <<<
-
-
 # pnpm
+# NOTE: This is Mac centric
 export PNPM_HOME="/Users/geordie/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# Universal NVM Setup for Different Operating Systems
+
+# Define NVM_DIR if not already set
+[ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+
+# Setup nvm differently for Arch & MacOS / other Linux
+case "$(uname -s)" in
+  Linux)
+    if [ -d "/usr/share/nvm" ]; then
+      # Arch Linux setup
+      source /usr/share/nvm/nvm.sh
+      source /usr/share/nvm/bash_completion
+      source /usr/share/nvm/install-nvm-exec
+    else
+      # Other Linux distributions (assuming manual installation)
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+    fi
+    ;;
+  Darwin)
+    # Same as Linux with ~/.nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+    ;;
+  *)
+    echo "Unsupported operating system. Please configure NVM manually."
+    ;;
+esac
