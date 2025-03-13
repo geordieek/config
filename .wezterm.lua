@@ -38,50 +38,72 @@ config.skip_close_confirmation_for_processes_named = {
 
 -- Set keybindings for pane navigation (uncommented as this is now handled with tmux)
 
--- config.keys = {
--- 	-- Split the pane horizontally (top/bottom) with CMD + SHIFT + J
--- 	{
--- 		key = "J",
--- 		mods = "CMD|SHIFT",
--- 		action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
--- 	},
--- 	-- Split the pane vertically (left/right) with CMD + SHIFT + J
--- 	{
--- 		key = "L",
--- 		mods = "CMD|SHIFT",
--- 		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
--- 	},
--- 	-- Close the current pane with CMD + SHIFT + K
--- 	{
--- 		key = "K",
--- 		mods = "CMD|SHIFT",
--- 		action = act.CloseCurrentPane({ confirm = false }),
--- 	},
--- 	-- Navigate to the pane above with CMD + K
--- 	{
--- 		key = "k",
--- 		mods = "CMD",
--- 		action = act.ActivatePaneDirection("Up"),
--- 	},
--- 	-- Navigate to the pane below with CMD + J
--- 	{
--- 		key = "j",
--- 		mods = "CMD",
--- 		action = act.ActivatePaneDirection("Down"),
--- 	},
--- 	-- Navigate to the pane to the right with CMD + L
--- 	{
--- 		key = "l",
--- 		mods = "CMD",
--- 		action = act.ActivatePaneDirection("Right"),
--- 	},
--- 	-- Navigate to the pane to the right with CMD + H
--- 	{
--- 		key = "h",
--- 		mods = "CMD",
--- 		action = act.ActivatePaneDirection("Left"),
--- 	},
--- }
+-- Set leader key to CTRL-S
+config.leader = { key = "s", mods = "CTRL", timeout_milliseconds = 1000 }
+
+-- Configure tmux-like keybindings
+config.keys = {
+	-- Split pane vertically (like tmux's prefix + ") with leader + "
+	{
+		key = '"',
+		mods = "LEADER",
+		action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+	-- Split pane horizontally (like tmux's prefix + %) with leader + %
+	{
+		key = "%",
+		mods = "LEADER",
+		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+	},
+	-- Close pane with leader + x (like tmux)
+	{
+		key = "x",
+		mods = "LEADER",
+		action = act.CloseCurrentPane({ confirm = true }),
+	},
+	-- Create new window with leader + c (like tmux)
+	{
+		key = "c",
+		mods = "LEADER",
+		action = act.SpawnTab("CurrentPaneDomain"),
+	},
+	-- Next window with leader + n (like tmux)
+	{
+		key = "n",
+		mods = "LEADER",
+		action = act.ActivateTabRelative(1),
+	},
+	-- Previous window with leader + p (like tmux)
+	{
+		key = "p",
+		mods = "LEADER",
+		action = act.ActivateTabRelative(-1),
+	},
+	-- Navigate to the pane above with CMD + k
+	{
+		key = "k",
+		mods = "CMD",
+		action = act.ActivatePaneDirection("Up"),
+	},
+	-- Navigate to the pane below with CMD + j
+	{
+		key = "j",
+		mods = "CMD",
+		action = act.ActivatePaneDirection("Down"),
+	},
+	-- Navigate to the pane to the right with CMD + l
+	{
+		key = "l",
+		mods = "CMD",
+		action = act.ActivatePaneDirection("Right"),
+	},
+	-- Navigate to the pane to the right with CMD + h
+	{
+		key = "h",
+		mods = "CMD",
+		action = act.ActivatePaneDirection("Left"),
+	},
+}
 
 -- and finally, return the configuration to wezterm
 return config
