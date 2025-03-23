@@ -3,7 +3,7 @@
 - Tracked using a bare repo from [this guide](https://www.atlassian.com/git/tutorials/dotfiles).
 - Special thanks to @typecraft-dev for a lot of inspiration with many parts of this setup.
 
-### Relevant software
+### Included tools
 
 - nvim
 - wezterm
@@ -14,12 +14,13 @@
   - zsh-syntax-highlighting
   - [powerlevel10k](https://github.com/romkatv/powerlevel10k) (get fonts from here)
 - lazyvim
-  - fd
-  - ripgrep
 - lazygit
+- fd
+- ripgrep
 - fzf
 - bat
 - nerdfonts
+- tealdeer
 
 #### Installation instructions
 - Initialise config repo on new computer with instructions from bare repo guide
@@ -27,6 +28,8 @@
 <details>
 
 <summary> Bash installation script </summary>
+
+#### WARNING: This isn't entirely up to date for all Operating Systems and is currently only tested with MacOS
 
 ```bash
 #!/bin/bash
@@ -40,7 +43,7 @@ else
 fi
 
 # List of programs to install via Homebrew
-programs=("node" "nvm" "neovim" "tmux" "fzf" "bat" "lazygit" "fd" "ripgrep")
+programs=("node" "nvm" "neovim" "tmux" "fzf" "bat" "lazygit" "fd" "ripgrep" "tealdeer")
 
 # Install the core programs possible with brew
 for program in "${programs[@]}"; do
@@ -146,10 +149,10 @@ echo "Automated installation complete! You will need to manually download and in
 #### TODO
 
 - Write more custom aliases and include them in their own .md or in here.
-- Write package manager script for easier package install on different systems.
+- Fix install script so that it works across MacOS, Arch & Debian systems
 - Investigate GNU Stow for managing this repo
 - Move from `vim-test` to [neotest](https://github.com/nvim-neotest/neotest)
-- Remap keyboard so held caps lock acts as ctrl
+- Remap keyboard so held caps lock acts as ctrl (achieved in MacOS with karabiner elements, I should track this as part of config)
 
 #### Things to investigate
 
