@@ -156,7 +156,12 @@ if [ -f '/Users/geordie/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/g
 # Mac only settings
 if [[ "$(uname)" == "Darwin" ]]; then
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+
+# Only source Powerlevel10k if not in Cursor agent mode
+if [[ "$PAGER" != "head -n 10000 | cat" && "$COMPOSER_NO_INTERACTION" != "1" ]]; then
+  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+fi
+
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Use rbenv to manage ruby
@@ -166,7 +171,10 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Only source p10k config if not in Cursor agent mode
+if [[ "$PAGER" != "head -n 10000 | cat" && "$COMPOSER_NO_INTERACTION" != "1" ]]; then
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+fi
 
 # Manual FZF installation on Ubuntu 22.04
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
