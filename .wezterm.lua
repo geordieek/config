@@ -9,7 +9,6 @@ local config = wezterm.config_builder()
 -- Tab configuration
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
-
 -- Set colour scheme
 config.color_scheme = "Catppuccin Mocha"
 
@@ -41,8 +40,8 @@ config.skip_close_confirmation_for_processes_named = {
 -- Set leader key to CTRL-S
 config.leader = { key = "s", mods = "CTRL", timeout_milliseconds = 1000 }
 
--- Configure tmux-like keybindings
 config.keys = {
+	-- Configure tmux-like keybindings
 	-- Split pane vertically (like tmux's prefix + ") with leader + "
 	{
 		key = '"',
@@ -102,6 +101,14 @@ config.keys = {
 		key = "h",
 		mods = "CMD",
 		action = act.ActivatePaneDirection("Left"),
+	},
+	-- Open new tab in home directory
+	{
+		key = "t",
+		mods = "CMD",
+		action = act.SpawnCommandInNewTab({
+			cwd = wezterm.home_dir,
+		}),
 	},
 }
 

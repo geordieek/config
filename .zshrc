@@ -1,6 +1,38 @@
+# Detect if we're running in Cursor (for performance optimizations)
+export CURSOR="true"
+if [[ "$PAGER" != "head -n 10000 | cat" && "$COMPOSER_NO_INTERACTION" != "1" ]]; then
+  export CURSOR="false"
+fi 
+
+# Early return for Cursor mode - minimal setup for maximum speed
+if [[ "$CURSOR" == "true" ]]; then
+  # Essential environment variables
+  export COREPACK_ENABLE_AUTO_PIN=0
+  export EDITOR='nvim'
+  export PATH="$HOME/.local/bin:$PATH"
+  
+  # Essential aliases
+  alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+  
+  # Set NVM_DIR for on-demand loading (no actual NVM loading)
+  [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+  
+  # Lazy load NVM function
+  nvm() {
+    unset -f nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm "$@"
+  }
+  
+  # Early return - we're done!
+  return
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+# 
+# Load Powerlevel10k instant prompt 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -18,7 +50,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# Powerlevel10k needs to be installed
+# Powerlevel10k needs to be installed if not on MacOS
 if [[ "$(uname)" == "Darwin" ]]; then
 # Brew manages settings on macos 
 ZSH_THEME="robbyrussell"
@@ -26,8 +58,6 @@ else
 # Linux settings (oh-my-zsh manages plugins on Ubuntu)
 ZSH_THEME="powerlevel10k/powerlevel10k"
 fi
-
-
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -144,7 +174,7 @@ alias inv='nvim $(fzf -m --preview="bat --colow=always {}")'
 # interact with config repository
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
-# Use fzf
+# Use fzf 
 source <(fzf --zsh)
 
 # The next line updates PATH for the Google Cloud SDK.
@@ -155,13 +185,9 @@ if [ -f '/Users/geordie/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/g
 
 # Mac only settings
 if [[ "$(uname)" == "Darwin" ]]; then
+# Load zsh plugins
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# Only source Powerlevel10k if not in Cursor agent mode
-if [[ "$PAGER" != "head -n 10000 | cat" && "$COMPOSER_NO_INTERACTION" != "1" ]]; then
-  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-fi
-
+source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Use rbenv to manage ruby
@@ -171,48 +197,63 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# Only source p10k config if not in Cursor agent mode
-if [[ "$PAGER" != "head -n 10000 | cat" && "$COMPOSER_NO_INTERACTION" != "1" ]]; then
-  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-fi
+# Load p10k config 
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Manual FZF installation on Ubuntu 22.04
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# pnpm
+# pnpm 
 # NOTE: This is Mac centric
+if [[ "$(uname)" == "Darwin" ]]; then
 export PNPM_HOME="/Users/geordie/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
+fi
 # pnpm end
 
-# Universal NVM Setup for Different Operating Systems
-
+# Universal NVM Setup - Always lazy load for better performance
 # Define NVM_DIR if not already set
 [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
 
-# Setup nvm differently for Arch & MacOS / other Linux
-case "$(uname -s)" in
-  Linux)
-    if [ -d "/usr/share/nvm" ]; then
-      # Arch Linux setup
-      source /usr/share/nvm/nvm.sh
-      source /usr/share/nvm/bash_completion
-      source /usr/share/nvm/install-nvm-exec
-    else
-      # Other Linux distributions (assuming manual installation)
+# Lazy load NVM function - loads NVM only when first used
+nvm() {
+  unset -f nvm
+  
+  # Setup nvm differently for Arch & MacOS / other Linux
+  case "$(uname -s)" in
+    Linux)
+      if [ -d "/usr/share/nvm" ]; then
+        # Arch Linux setup
+        source /usr/share/nvm/nvm.sh
+        source /usr/share/nvm/bash_completion
+        source /usr/share/nvm/install-nvm-exec
+      else
+        # Other Linux distributions (assuming manual installation)
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+      fi
+      ;;
+    Darwin)
+      # Same as Linux with ~/.nvm
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
       [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    fi
-    ;;
-  Darwin)
-    # Same as Linux with ~/.nvm
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    ;;
-  *)
-    echo "Unsupported operating system. Please configure NVM manually."
-    ;;
-esac
+      ;;
+    *)
+      echo "Unsupported operating system. Please configure NVM manually."
+      ;;
+  esac
+  
+  # Call the actual nvm function with all arguments
+  nvm "$@"
+}
+
+# Some more mac centric path settings
+if [[ "$(uname)" == "Darwin" ]]; then
+  export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
+  # using tailscale gui currently
+  alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
+fi
+export PATH="$HOME/.local/bin:$PATH"
