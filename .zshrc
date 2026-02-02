@@ -1,3 +1,5 @@
+# Add deno completions to search path
+if [[ ":$FPATH:" != *":/Users/geordie/.zsh/completions:"* ]]; then export FPATH="/Users/geordie/.zsh/completions:$FPATH"; fi
 # Detect if we're running in Cursor (for performance optimizations)
 export CURSOR="true"
 if [[ "$PAGER" != "head -n 10000 | cat" && "$COMPOSER_NO_INTERACTION" != "1" ]]; then
@@ -174,8 +176,14 @@ alias inv='nvim $(fzf -m --preview="bat --colow=always {}")'
 # interact with config repository
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
+# quick lazygit
+alias lg=lazygit
+
 # Use fzf 
 source <(fzf --zsh)
+
+# Configure fzf alt-c (directory search) to ignore common folders using fd
+export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git --exclude node_modules --exclude dist --exclude build --exclude coverage --exclude __generated__ --exclude 'Library/**' --exclude 'Applications/**' --exclude 'System/**' --exclude 'usr/**' --exclude 'var/**' --exclude 'tmp/**' --exclude 'Downloads/**' --exclude 'Desktop/**' --exclude 'Documents/Archive/**'"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/geordie/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/geordie/google-cloud-sdk/path.zsh.inc'; fi
@@ -255,5 +263,27 @@ if [[ "$(uname)" == "Darwin" ]]; then
   export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
   # using tailscale gui currently
   alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
+  # setup office coder alias
+  office-coder() {
+    echo "🚀 Setting up Coder access..."
+    
+    # Check if already running
+    if curl -s -o /dev/null -w "%{http_code}" http://pipelabs-west-melbourne-a.taile55ad.ts.net:8080/login | grep -q "200\|302"; then
+        echo "✅ Coder is already accessible!"
+        open "http://pipelabs-west-melbourne-a.taile55ad.ts.net:8080/login"
+        return
+    fi
+    
+    # Set up Tailscale serve to NodePort
+    echo "🔧 Setting up Tailscale serve..."
+    ssh office "tailscale serve --http=8080 off; tailscale serve --bg --http=8080 http://localhost:31199"
+    
+    # Wait and open
+    echo "⏳ Waiting for service to start..."
+    sleep 2
+    echo "🌐 Opening Coder in browser..."
+    open "http://pipelabs-west-melbourne-a.taile55ad.ts.net:8080/login"
+  }
 fi
 export PATH="$HOME/.local/bin:$PATH"
+. "/Users/geordie/.deno/env"

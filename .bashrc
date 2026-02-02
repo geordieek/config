@@ -7,3 +7,4 @@ alias config='/usr/bin/git --git-dir=/Users/geordie/.cfg/ --work-tree=/Users/geo
 PS1='[\u@\h \W]\$ '
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+. "/Users/geordie/.deno/env"
