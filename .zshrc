@@ -1,289 +1,137 @@
-# Add deno completions to search path
-if [[ ":$FPATH:" != *":/Users/geordie/.zsh/completions:"* ]]; then export FPATH="/Users/geordie/.zsh/completions:$FPATH"; fi
-# Detect if we're running in Cursor (for performance optimizations)
-export CURSOR="true"
-if [[ "$PAGER" != "head -n 10000 | cat" && "$COMPOSER_NO_INTERACTION" != "1" ]]; then
-  export CURSOR="false"
-fi 
+# =============================================================================
+# ~/.zshrc
+# =============================================================================
 
-# Early return for Cursor mode - minimal setup for maximum speed
+# --- Cursor fast path --------------------------------------------------------
+# Cursor injects COMPOSER_NO_INTERACTION=1. Detect it and bail early with only
+# the essentials so Cursor's shell integration stays fast.
+export CURSOR="false"
+if [[ "$PAGER" == "head -n 10000 | cat" || "$COMPOSER_NO_INTERACTION" == "1" ]]; then
+  export CURSOR="true"
+fi
+
 if [[ "$CURSOR" == "true" ]]; then
-  # Essential environment variables
   export COREPACK_ENABLE_AUTO_PIN=0
   export EDITOR='nvim'
   export PATH="$HOME/.local/bin:$PATH"
-  
-  # Essential aliases
   alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-  
-  # Set NVM_DIR for on-demand loading (no actual NVM loading)
   [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
-  
-  # Lazy load NVM function
-  nvm() {
-    unset -f nvm
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm "$@"
-  }
-  
-  # Early return - we're done!
+  nvm() { unset -f nvm; [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"; nvm "$@"; }
   return
 fi
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-# 
-# Load Powerlevel10k instant prompt 
+# --- Powerlevel10k instant prompt --------------------------------------------
+# Must come before any output. Prompts / [y/n] confirmations go above this.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-
-# Stop corepack from adding 'packageManager' to package.json
+# --- Environment -------------------------------------------------------------
 export COREPACK_ENABLE_AUTO_PIN=0
-
-# Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export PATH="$HOME/.local/bin:$PATH"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# Powerlevel10k needs to be installed if not on MacOS
-if [[ "$(uname)" == "Darwin" ]]; then
-# Brew manages settings on macos 
-ZSH_THEME="robbyrussell"
-else
-# Linux settings (oh-my-zsh manages plugins on Ubuntu)
-ZSH_THEME="powerlevel10k/powerlevel10k"
-fi
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-
-# Mac only settings
-if [[ "$(uname)" == "Darwin" ]]; then
-# Brew manages plugins in MacOS, so don't need plugins here
-plugins=(
-  git 
-)
-else
-# Linux settings (oh-my-zsh manages plugins on Ubuntu)
-plugins=(
-  git 
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-)
-fi
-
-# Now we've set plugins, source oh-my-zsh.sh
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
+# Prefer nvim; fall back to vim over SSH where nvim may not be available
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
   export EDITOR='nvim'
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
-
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# Custom aliases
-# fzf, preview with bat, then open in nvim directly
-alias inv='nvim $(fzf -m --preview="bat --colow=always {}")'
-
-# interact with config repository
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-
-# quick lazygit
-alias lg=lazygit
-
-# Use fzf 
-source <(fzf --zsh)
-
-# Configure fzf alt-c (directory search) to ignore common folders using fd
-export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git --exclude node_modules --exclude dist --exclude build --exclude coverage --exclude __generated__ --exclude 'Library/**' --exclude 'Applications/**' --exclude 'System/**' --exclude 'usr/**' --exclude 'var/**' --exclude 'tmp/**' --exclude 'Downloads/**' --exclude 'Desktop/**' --exclude 'Documents/Archive/**'"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/geordie/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/geordie/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/geordie/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/geordie/google-cloud-sdk/completion.zsh.inc'; fi
-
-# Mac only settings
+# --- Oh My Zsh ---------------------------------------------------------------
+# On macOS, p10k is sourced directly from Homebrew (see Plugins section below).
+# ZSH_THEME="" tells OMZ to skip theme loading so p10k isn't loaded twice.
 if [[ "$(uname)" == "Darwin" ]]; then
-# Load zsh plugins
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# Use rbenv to manage ruby
-# export PATH="$HOME/.rbenv/bin:$PATH"
-# eval "$(rbenv init -)"
-
+  ZSH_THEME=""
+  plugins=(git)
+else
+  ZSH_THEME="powerlevel10k/powerlevel10k"
+  plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# Load p10k config 
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+source "$ZSH/oh-my-zsh.sh"
 
-# Manual FZF installation on Ubuntu 22.04
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# pnpm 
-# NOTE: This is Mac centric
+# --- Plugins (macOS, Homebrew managed) ---------------------------------------
+# On Linux, OMZ manages plugins via the plugins=() array above.
+# The # [setup] markers below are used by dev-setup.sh for idempotency checks.
 if [[ "$(uname)" == "Darwin" ]]; then
-export PNPM_HOME="/Users/geordie/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+  source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"         # [setup] powerlevel10k
+  source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"   # [setup] zsh-autosuggestions
+  source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"  # [setup] zsh-syntax-highlighting — must be last
 fi
-# pnpm end
 
-# Universal NVM Setup - Always lazy load for better performance
-# Define NVM_DIR if not already set
+# --- NVM (lazy load) ---------------------------------------------------------
+# Deferring NVM init until first use saves ~300ms on shell startup.
+# On Linktree machines, NVM itself is managed by the Linktree onboarding setup.
 [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
 
-# Lazy load NVM function - loads NVM only when first used
 nvm() {
   unset -f nvm
-  
-  # Setup nvm differently for Arch & MacOS / other Linux
   case "$(uname -s)" in
     Linux)
-      if [ -d "/usr/share/nvm" ]; then
-        # Arch Linux setup
+      if [[ -d "/usr/share/nvm" ]]; then
+        # Arch Linux
         source /usr/share/nvm/nvm.sh
         source /usr/share/nvm/bash_completion
         source /usr/share/nvm/install-nvm-exec
       else
-        # Other Linux distributions (assuming manual installation)
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        # Ubuntu / other distributions
+        [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
+        [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
       fi
       ;;
     Darwin)
-      # Same as Linux with ~/.nvm
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-      ;;
-    *)
-      echo "Unsupported operating system. Please configure NVM manually."
+      [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
+      [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
       ;;
   esac
-  
-  # Call the actual nvm function with all arguments
   nvm "$@"
 }
 
-# Some more mac centric path settings
+# --- pnpm --------------------------------------------------------------------
 if [[ "$(uname)" == "Darwin" ]]; then
-  export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
-  # using tailscale gui currently
-  alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
-  # setup office coder alias
-  office-coder() {
-    echo "🚀 Setting up Coder access..."
-    
-    # Check if already running
-    if curl -s -o /dev/null -w "%{http_code}" http://pipelabs-west-melbourne-a.taile55ad.ts.net:8080/login | grep -q "200\|302"; then
-        echo "✅ Coder is already accessible!"
-        open "http://pipelabs-west-melbourne-a.taile55ad.ts.net:8080/login"
-        return
-    fi
-    
-    # Set up Tailscale serve to NodePort
-    echo "🔧 Setting up Tailscale serve..."
-    ssh office "tailscale serve --http=8080 off; tailscale serve --bg --http=8080 http://localhost:31199"
-    
-    # Wait and open
-    echo "⏳ Waiting for service to start..."
-    sleep 2
-    echo "🌐 Opening Coder in browser..."
-    open "http://pipelabs-west-melbourne-a.taile55ad.ts.net:8080/login"
-  }
+  export PNPM_HOME="$HOME/Library/pnpm"
+  case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+  esac
 fi
-export PATH="$HOME/.local/bin:$PATH"
-. "/Users/geordie/.deno/env"
+
+# --- Google Cloud SDK --------------------------------------------------------
+[[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]]       && source "$HOME/google-cloud-sdk/path.zsh.inc"
+[[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
+
+# --- fzf ---------------------------------------------------------------------
+# [setup] fzf
+if [[ "$(uname)" == "Darwin" ]]; then
+  source <(fzf --zsh)
+else
+  # Linux: fzf installed manually, integration written to ~/.fzf.zsh
+  [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+fi
+
+# Directory search (alt-c): skip generated/vendor/system folders
+export FZF_ALT_C_COMMAND="fd --type d --hidden \
+  --exclude .git \
+  --exclude node_modules \
+  --exclude dist \
+  --exclude build \
+  --exclude coverage \
+  --exclude __generated__ \
+  --exclude 'Library/**' \
+  --exclude 'Applications/**' \
+  --exclude 'System/**' \
+  --exclude 'usr/**' \
+  --exclude 'var/**' \
+  --exclude 'tmp/**' \
+  --exclude 'Downloads/**' \
+  --exclude 'Desktop/**' \
+  --exclude 'Documents/Archive/**'"
+
+# --- Aliases -----------------------------------------------------------------
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'  # [setup] dotfiles alias
+alias lg='lazygit'                                                     # quick lazygit
+alias inv='nvim $(fzf -m --preview="bat --color=always {}")'          # fzf picker → nvim
+
+# --- Powerlevel10k config ----------------------------------------------------
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
