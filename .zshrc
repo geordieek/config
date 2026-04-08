@@ -51,6 +51,11 @@ fi
 
 source "$ZSH/oh-my-zsh.sh"
 
+# --- History -----------------------------------------------------------------
+setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_ALL_DUPS
+export HISTORY_IGNORE="*(token|secret|password|api_key|auth|credential)*"
+
 # --- Plugins (macOS, Homebrew managed) ---------------------------------------
 # On Linux, OMZ manages plugins via the plugins=() array above.
 # The # [setup] markers below are used by dev-setup.sh for idempotency checks.
@@ -60,33 +65,62 @@ if [[ "$(uname)" == "Darwin" ]]; then
   source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"  # [setup] zsh-syntax-highlighting — must be last
 fi
 
-# --- NVM (lazy load) ---------------------------------------------------------
-# Deferring NVM init until first use saves ~300ms on shell startup.
-# On Linktree machines, NVM itself is managed by the Linktree onboarding setup.
-[ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+# --- NVM ---------------------------------------------------------------------
+# [lazy load disabled for now, causing too many issues with sub-processes spawned by agents]
+# [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+#
+# _load_nvm() {
+#   unset -f nvm node npm npx yarn corepack ltd
+#   case "$(uname -s)" in
+#     Linux)
+#       if [[ -d "/usr/share/nvm" ]]; then
+#         source /usr/share/nvm/nvm.sh
+#         source /usr/share/nvm/bash_completion
+#         source /usr/share/nvm/install-nvm-exec
+#       else
+#         [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
+#         [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+#       fi
+#       ;;
+#     Darwin)
+#       [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
+#       [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+#       ;;
+#   esac
+# }
+#
+# nvm()      { _load_nvm; nvm "$@"; }
+# node()     { _load_nvm; node "$@"; }
+# npm()      { _load_nvm; npm "$@"; }
+# npx()      { _load_nvm; npx "$@"; }
+# yarn()     { _load_nvm; yarn "$@"; }
+# corepack() { _load_nvm; corepack "$@"; }
+# ltd()      { _load_nvm; ltd "$@"; }
 
-nvm() {
-  unset -f nvm
-  case "$(uname -s)" in
-    Linux)
-      if [[ -d "/usr/share/nvm" ]]; then
-        # Arch Linux
-        source /usr/share/nvm/nvm.sh
-        source /usr/share/nvm/bash_completion
-        source /usr/share/nvm/install-nvm-exec
-      else
-        # Ubuntu / other distributions
-        [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
-        [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-      fi
-      ;;
-    Darwin)
-      [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
-      [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-      ;;
-  esac
-  nvm "$@"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Auto-switch node version when entering a directory with .nvmrc
+autoload -U add-zsh-hook
+load-nvmrc() {
+  local nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
+      nvm use
+    fi
+  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
 }
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
 
 # --- pnpm --------------------------------------------------------------------
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -100,6 +134,9 @@ fi
 # --- Google Cloud SDK --------------------------------------------------------
 [[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]]       && source "$HOME/google-cloud-sdk/path.zsh.inc"
 [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
+
+# --- PHP ---------------------------------------------------------------------
+alias composer='php "$HOME/.local/bin/composer.phar"'
 
 # --- fzf ---------------------------------------------------------------------
 # [setup] fzf
@@ -131,7 +168,13 @@ export FZF_ALT_C_COMMAND="fd --type d --hidden \
 # --- Aliases -----------------------------------------------------------------
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'  # [setup] dotfiles alias
 alias lg='lazygit'                                                     # quick lazygit
-alias inv='nvim $(fzf -m --preview="bat --color=always {}")'          # fzf picker → nvim
+alias nv='nvim $(fzf -m --preview="bat --color=always {}")'          # fzf picker → nvim
 
 # --- Powerlevel10k config ----------------------------------------------------
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+
+# 
+# --- Secrets -----------------------------------------------------------------
+[ -f ~/.secrets ] && source ~/.secrets
+
