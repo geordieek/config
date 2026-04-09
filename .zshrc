@@ -65,61 +65,19 @@ if [[ "$(uname)" == "Darwin" ]]; then
   source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"  # [setup] zsh-syntax-highlighting — must be last
 fi
 
-# --- NVM ---------------------------------------------------------------------
-# [lazy load disabled for now, causing too many issues with sub-processes spawned by agents]
-# [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
-#
-# _load_nvm() {
-#   unset -f nvm node npm npx yarn corepack ltd
-#   case "$(uname -s)" in
-#     Linux)
-#       if [[ -d "/usr/share/nvm" ]]; then
-#         source /usr/share/nvm/nvm.sh
-#         source /usr/share/nvm/bash_completion
-#         source /usr/share/nvm/install-nvm-exec
-#       else
-#         [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
-#         [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-#       fi
-#       ;;
-#     Darwin)
-#       [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
-#       [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-#       ;;
-#   esac
-# }
-#
-# nvm()      { _load_nvm; nvm "$@"; }
-# node()     { _load_nvm; node "$@"; }
-# npm()      { _load_nvm; npm "$@"; }
-# npx()      { _load_nvm; npx "$@"; }
-# yarn()     { _load_nvm; yarn "$@"; }
-# corepack() { _load_nvm; corepack "$@"; }
-# ltd()      { _load_nvm; ltd "$@"; }
+# --- NVM (lazy load) ---------------------------------------------------------
+# load_nvm and PATH setup live in .zshenv so they're available to all shell
+# types (non-interactive, /bin/sh hooks, Claude snapshots). Only the stubs
+# belong here — they trigger full NVM loading on first use in interactive shells.
+[ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
 
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-# Auto-switch node version when entering a directory with .nvmrc
-autoload -U add-zsh-hook
-load-nvmrc() {
-  local nvmrc_path="$(nvm_find_nvmrc)"
-
-  if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-    if [ "$nvmrc_node_version" = "N/A" ]; then
-      nvm install
-    elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
-      nvm use
-    fi
-  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
-    echo "Reverting to nvm default version"
-    nvm use default
-  fi
-}
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
+nvm()      { load_nvm; nvm "$@"; }
+node()     { load_nvm; node "$@"; }
+npm()      { load_nvm; npm "$@"; }
+npx()      { load_nvm; npx "$@"; }
+yarn()     { load_nvm; yarn "$@"; }
+corepack() { load_nvm; corepack "$@"; }
+ltd()      { load_nvm; ltd "$@"; }
 
 
 # --- pnpm --------------------------------------------------------------------
