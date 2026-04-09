@@ -110,6 +110,12 @@ config.keys = {
 			cwd = wezterm.home_dir,
 		}),
 	},
+	-- Toggle always on top
+	{
+		key = "]",
+		mods = "CMD|SHIFT",
+		action = wezterm.action.ToggleAlwaysOnTop,
+	},
 }
 
 -- and finally, return the configuration to wezterm
