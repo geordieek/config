@@ -35,22 +35,23 @@ load_nvm() {
     Linux)
       if [[ -d "/usr/share/nvm" ]]; then
         source /usr/share/nvm/nvm.sh
-        source /usr/share/nvm/bash_completion
+        [[ -o interactive ]] && source /usr/share/nvm/bash_completion
         source /usr/share/nvm/install-nvm-exec
       else
         [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
-        [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+        [[ -o interactive && -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
       fi
       ;;
     Darwin)
       [[ -s "$NVM_DIR/nvm.sh" ]]          && source "$NVM_DIR/nvm.sh"
-      [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+      [[ -o interactive && -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
       ;;
   esac
 }
 
 # Non-interactive shells don't source .zshrc so lazy stubs never run.
 # Load NVM fully so the nvm command itself works.
-if [[ ! -o interactive ]]; then
-  load_nvm
-fi
+# TODO: Confirm removing this doesn't bork Claude
+# if [[ ! -o interactive ]]; then
+#   load_nvm
+# fi
