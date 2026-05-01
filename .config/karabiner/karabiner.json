@@ -1,0 +1,48 @@
+{
+  "profiles": [
+    {
+      "complex_modifications": {
+        "parameters": { "basic.to_if_alone_timeout_milliseconds": 500 },
+        "rules": [
+          {
+            "description": "Caps Lock → Escape (tap) / Left Control (hold)",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "caps_lock",
+                  "modifiers": { "optional": ["any"] }
+                },
+                "to": [
+                  {
+                    "key_code": "left_control",
+                    "lazy": true
+                  }
+                ],
+                "to_if_alone": [{ "key_code": "escape" }],
+                "type": "basic"
+              }
+            ]
+          }
+        ]
+      },
+      "devices": [
+        {
+          "identifiers": {
+            "is_pointing_device": true,
+            "product_id": 49291,
+            "vendor_id": 1133
+          },
+          "ignore": false,
+          "mouse_flip_vertical_wheel": true
+        }
+      ],
+      "name": "Default profile",
+      "selected": true,
+      "virtual_hid_keyboard": {
+        "country_code": 0,
+        "keyboard_type_v2": "ansi"
+      }
+    }
+  ]
+}
+
