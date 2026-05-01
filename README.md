@@ -15,6 +15,7 @@
   - [powerlevel10k](https://github.com/romkatv/powerlevel10k) (get fonts from here)
 - lazyvim
 - lazygit
+- lazydocker
 - fd
 - ripgrep
 - fzf
@@ -91,6 +92,7 @@ BREW_FORMULAE=(
   fzf
   bat
   lazygit
+  lazydocker
   fd
   ripgrep
   tealdeer
