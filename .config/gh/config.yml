@@ -12,8 +12,8 @@ prefer_editor_prompt: disabled
 pager:
 # Aliases allow you to create nicknames for gh commands
 aliases:
-  co: pr checkout
-  comments: '!f() { gh pr view "$1" --json comments,reviews --jq ".comments[].body, .reviews[].body"; }; f'
+    co: pr checkout
+    comments: '!f() { PR="${1:-$(gh pr view --json number --jq .number 2>/dev/null)}"; REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner); { echo "=== PR Comments ==="; GH_PAGER=cat gh api --paginate "repos/$REPO/issues/$PR/comments" --jq ".[] | \"@\(.user.login): \(.body)\""; echo; echo "=== Review Comments ==="; GH_PAGER=cat gh api --paginate "repos/$REPO/pulls/$PR/comments" --jq ".[] | \"@\(.user.login) [\(.path):\(.line // .original_line)]: \(.body)\""; } | less -R; }; f'
 # The path to a unix socket through which to send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
 http_unix_socket:
 # What web browser gh should use when opening URLs. If blank, will refer to environment.
